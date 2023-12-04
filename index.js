@@ -21,56 +21,60 @@ const processData = async () => {
 
 const runBot = async (numero) => {
     await processData()
-    const browser = await puppeteer.launch({ headless: false, args: ['--incognito'],timeout:0});
-
-    for (numero of listaNumeros) {
-        try {
-            const page = await browser.newPage();
-            page.setDefaultTimeout(0)
-            await page.goto('https://members.tajhotels.com/v2/?clientId=IHCL-WEB-APP&redirectURL=https%3A%2F%2Ftaj-dev65-02.adobecqms.net%2Fen-in%2Ftajinnercircle%2F');
-            await page.waitForSelector('.down-icon', {timeout:0})
-            const inputPais = await page.$('.down-icon');
-            await inputPais.click();
-
-            await page.waitForTimeout(3000)
-            const inputPaiscodigodiv = await page.$('.country-search')
-            const inputPaiscodigo = await inputPaiscodigodiv.$('input')
-            await inputPaiscodigo.type('bolivia')
-            await page.waitForTimeout(3000)
-            const paises = await page.$$('.single-country')
-            let codigo;
-
-            for (let i = 0; i < paises.length; i++) {
-                const html = await page.evaluate(element => element.innerHTML, paises[i]);
-
-                if (html.includes('Bolivia')) {
-                    codigo = paises[i];
-
+    const browser = await puppeteer.launch({ headless: false, args: ['--incognito'],timeout:0, protocolTimeout:0});
+    try{
+        for (numero of listaNumeros) {
+            try {
+                const page = await browser.newPage();
+                page.setDefaultTimeout(0)
+                await page.goto('https://members.tajhotels.com/v2/?clientId=IHCL-WEB-APP&redirectURL=https%3A%2F%2Ftaj-dev65-02.adobecqms.net%2Fen-in%2Ftajinnercircle%2F');
+                await page.waitForSelector('.down-icon', {timeout:0})
+                const inputPais = await page.$('.down-icon');
+                await inputPais.click();
+    
+                await page.waitForTimeout(3000)
+                const inputPaiscodigodiv = await page.$('.country-search')
+                const inputPaiscodigo = await inputPaiscodigodiv.$('input')
+                await inputPaiscodigo.type('bolivia')
+                await page.waitForTimeout(3000)
+                const paises = await page.$$('.single-country')
+                let codigo;
+    
+                for (let i = 0; i < paises.length; i++) {
+                    const html = await page.evaluate(element => element.innerHTML, paises[i]);
+    
+                    if (html.includes('Bolivia')) {
+                        codigo = paises[i];
+    
+                    }
                 }
-            }
-            if (codigo) {
-                await codigo.click()
-            }
-
-            await page.waitForTimeout(3000)
-            const inputNumero = await page.$('#phoneInputLogin-phone'); // Fix the selector here
-
-            await inputNumero.type(numero);
-            const marck = await page.$('.checkmark')
-            await marck.click()
-            await page.waitForTimeout(2000)
-            const btnfinal = await page.$('.confirmButton')
-            await btnfinal.click()
-            setInterval(async () => {
-                const resendCodeBtn = await page.$('#resendCode');
-                if (resendCodeBtn) {
-                    await resendCodeBtn.click();
+                if (codigo) {
+                    await codigo.click()
                 }
-            }, 30000);
-        } catch (error) {
-            console.error('Error:', error);
+    
+                await page.waitForTimeout(3000)
+                const inputNumero = await page.$('#phoneInputLogin-phone'); // Fix the selector here
+    
+                await inputNumero.type(numero);
+                const marck = await page.$('.checkmark')
+                await marck.click()
+                await page.waitForTimeout(2000)
+                const btnfinal = await page.$('.confirmButton')
+                await btnfinal.click()
+                setInterval(async () => {
+                    const resendCodeBtn = await page.$('#resendCode');
+                    if (resendCodeBtn) {
+                        await resendCodeBtn.click();
+                    }
+                }, 30000);
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
+    }catch(e){
+        console.log('errror', e)
     }
+    
 
 
 
