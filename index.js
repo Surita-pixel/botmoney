@@ -28,7 +28,7 @@ const runBot = async (numero) => {
             const page = await browser.newPage();
             page.setDefaultTimeout(0)
             await page.goto('https://members.tajhotels.com/v2/?clientId=IHCL-WEB-APP&redirectURL=https%3A%2F%2Ftaj-dev65-02.adobecqms.net%2Fen-in%2Ftajinnercircle%2F');
-
+            await page.waitForSelector('.down-icon', {timeout:0})
             const inputPais = await page.$('.down-icon');
             await inputPais.click();
 
