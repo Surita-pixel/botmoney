@@ -21,7 +21,7 @@ const processData = async () => {
 
 const runBot = async (numero) => {
     await processData()
-    const browser = await puppeteer.launch({ headless: false, args: ['--incognito'] });
+    const browser = await puppeteer.launch({ headless: false, args: ['--incognito'],timeout:0});
 
     for (numero of listaNumeros) {
         try {
