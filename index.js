@@ -10,7 +10,7 @@ const processData = async () => {
         filteredList.forEach(item => {
             item.NUMBER = item.NUMBER.replace(/^591/, ''); // Replace the string starting with '227'
         });
-         listaNumeros = jsonObj.map(item => item.NUMBER);
+        listaNumeros = jsonObj.map(item => item.NUMBER);
 
         const jsonString = JSON.stringify(listaNumeros);
         console.log(jsonString);
@@ -23,8 +23,8 @@ const runBot = async (numero) => {
     await processData()
     const browser = await puppeteer.launch({ headless: false, args: ['--incognito'] });
 
-    try {
-        for (numero of listaNumeros) {
+    for (numero of listaNumeros) {
+        try {
             const page = await browser.newPage();
             page.setDefaultTimeout(0)
             await page.goto('https://members.tajhotels.com/v2/?clientId=IHCL-WEB-APP&redirectURL=https%3A%2F%2Ftaj-dev65-02.adobecqms.net%2Fen-in%2Ftajinnercircle%2F');
@@ -59,14 +59,22 @@ const runBot = async (numero) => {
             const marck = await page.$('.checkmark')
             await marck.click()
             await page.waitForTimeout(2000)
-            const btnfinal =  await page.$('.confirmButton')
+            const btnfinal = await page.$('.confirmButton')
             await btnfinal.click()
+            setInterval(async () => {
+                const resendCodeBtn = await page.$('#resendCode');
+                if (resendCodeBtn) {
+                    await resendCodeBtn.click();
+                }
+            }, 30000);
+        } catch (error) {
+            console.error('Error:', error);
         }
-
-
-    } catch (error) {
-        console.error('Error:', error);
     }
+
+
+
+
 };
 
 runBot()
